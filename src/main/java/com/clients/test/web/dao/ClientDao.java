@@ -5,7 +5,9 @@ import com.clients.test.web.model.Client;
 import java.util.List;
 
 public interface ClientDao {
-    List<Client> findAll();
-    Client findById(int id);
-    Client save(Client client);
+    List<Client> getAllClients();
+    Client getClientById(int id);
+    Client addClient(Client client);
+    Client updateClient(Client client);
+    void deleteClient(int id);
 }

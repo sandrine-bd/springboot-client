@@ -9,6 +9,8 @@ public class Client {
     private LocalDate birthDate;
     private String licenseNumber;
 
+    public Client() {}
+
     public Client(int id, String lastName, String firstName, LocalDate birthDate, String licenseNumber) {
         this.id = id;
         this.lastName = lastName;
@@ -28,33 +30,45 @@ public class Client {
                 '}';
     }
 
+    /**
+     * Getters et setters
+     */
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
+
     public String getLastName() {
         return lastName;
     }
+
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
     public String getFirstName() {
         return firstName;
     }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
+
     public String getLicenseNumber() {
         return licenseNumber;
     }
+
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }

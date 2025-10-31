@@ -9,7 +9,8 @@ import java.util.List;
 
 @Repository
 public class ClientDaoImpl implements ClientDao {
-    public static List<Client> clients = new ArrayList<>();
+
+    private static List<Client> clients = new ArrayList<>();
 
     static {
         clients.add(new Client(1, "Dupuis", "John", LocalDate.of(1986, 12, 12), "12BG56789"));
@@ -18,12 +19,12 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public List<Client> findAll() {
+    public List<Client> getAllClients() {
         return clients;
     }
 
     @Override
-    public Client findById(int id) {
+    public Client getClientById(int id) {
         for (Client client : clients) {
             if (client.getId() == id) {
                 return client;
@@ -33,8 +34,25 @@ public class ClientDaoImpl implements ClientDao {
     }
 
     @Override
-    public Client save(Client client) {
+    public Client addClient(Client client) {
         clients.add(client);
         return client;
+    }
+
+    @Override
+    public Client updateClient(Client client) {
+        Client existing = getClientById(client.getId());
+        if (existing == null) {
+            existing.setLastName(client.getLastName());
+            existing.setFirstName(client.getFirstName());
+            existing.setBirthDate(client.getBirthDate());
+            existing.setLicenseNumber(client.getLicenseNumber());
+        }
+        return existing;
+    }
+
+    @Override
+    public void deleteClient(int id) {
+        clients.removeIf(client -> client.getId() == id);
     }
 }
