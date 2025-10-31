@@ -52,10 +52,10 @@ public class Client {
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
-    public int getLicenseNumber() {
+    public String getLicenseNumber() {
         return licenseNumber;
     }
-    public void setLicenseNumber(int licenseNumber) {
+    public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }
 }

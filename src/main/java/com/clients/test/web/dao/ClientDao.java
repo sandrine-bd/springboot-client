@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ClientDao {
     List<Client> findAll();
-    List<Client> findById(int id);
+    Client findById(int id);
     Client save(Client client);
 }
