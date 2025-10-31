@@ -42,7 +42,7 @@ public class ClientDaoImpl implements ClientDao {
     @Override
     public Client updateClient(Client client) {
         Client existing = getClientById(client.getId());
-        if (existing == null) {
+        if (existing != null) {
             existing.setLastName(client.getLastName());
             existing.setFirstName(client.getFirstName());
             existing.setBirthDate(client.getBirthDate());
