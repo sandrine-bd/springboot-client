@@ -3,9 +3,9 @@ package com.clients.test.web.controller;
 import com.clients.test.web.dao.ClientDao;
 import com.clients.test.web.exception.ClientNotFoundException;
 import com.clients.test.web.model.Client;
+import com.clients.test.web.service.LicenseValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -24,10 +24,12 @@ import java.util.List;
 public class ClientController {
 
     private final ClientDao clientDao;
+    private final LicenseValidationService licenseValidationService;
 
     @Autowired
-    public ClientController(ClientDao clientDao) {
+    public ClientController(ClientDao clientDao, LicenseValidationService licenseValidationService) {
         this.clientDao = clientDao;
+        this.licenseValidationService = licenseValidationService;
     }
 
     @GetMapping("/")
@@ -85,6 +87,13 @@ public class ClientController {
                     schema = @Schema(implementation = Client.class),
                     examples = @ExampleObject(value = "{ \"Nom\": \"Durand\", \"Prénom\": \"Georges\", \"Date de naissance\": \"1980, 05, 24\", \"Numéro de permis\": \"D5R2H7W9A\" }")))
             @RequestBody Client client) {
+        // vérifier le numéro de permis avant d'ajouter le client
+        boolean isValid = licenseValidationService.isLicenseValid(client.getLicenseNumber());
+
+        if (!isValid) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
         Client createdClient = clientDao.addClient(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
