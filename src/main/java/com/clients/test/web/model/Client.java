@@ -1,12 +1,24 @@
 package com.clients.test.web.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDate;
 
 public class Client {
     private int id;
+
+    @NotBlank
     private String lastName;
+
+    @NotBlank
     private String firstName;
+
+    @NotBlank
     private LocalDate birthDate;
+
+    @NotBlank
+    @Size(min = 9, max = 9)
     private String licenseNumber;
 
     public Client() {}
