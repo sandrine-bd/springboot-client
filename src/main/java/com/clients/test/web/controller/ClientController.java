@@ -1,8 +1,8 @@
 package com.clients.test.web.controller;
 
-import com.clients.test.web.dao.ClientDao;
 import com.clients.test.web.exception.ClientNotFoundException;
 import com.clients.test.web.model.Client;
+import com.clients.test.web.service.ClientService;
 import com.clients.test.web.service.LicenseValidationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,15 +20,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Tag(name = "tag_at_class_level", description = "Clients related class level tag")
+@Tag(name = "Clients", description = "API de gestion de clients")
 public class ClientController {
 
-    private final ClientDao clientDao;
+    private final ClientService clientService;
     private final LicenseValidationService licenseValidationService;
 
     @Autowired
-    public ClientController(ClientDao clientDao, LicenseValidationService licenseValidationService) {
-        this.clientDao = clientDao;
+    public ClientController(ClientService clientService, LicenseValidationService licenseValidationService) {
+        this.clientService = clientService;
         this.licenseValidationService = licenseValidationService;
     }
 
@@ -40,13 +40,13 @@ public class ClientController {
     @Operation(summary = "Get all clients")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found clients",
-                content = { @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = Client.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Client.class))}),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Did not find any clients", content = @Content) })
+            @ApiResponse(responseCode = "404", description = "Did not find any clients", content = @Content)})
     @GetMapping("/clients")
-    public List<Client> getAllClients() {
-        return clientDao.getAllClients();
+    public List<Client> findAll() {
+        return clientService.findAll();
     }
 
     @Operation(summary = "Get a client by its id")
@@ -62,8 +62,8 @@ public class ClientController {
     @Tag(name = "common_tag_at_method_level")
     @Tag(name = "findClient", description = "Find Clients related tag")
     @GetMapping("/clients/{id}")
-    public ResponseEntity<Client> getClientById(@Parameter(description = "id of client to be searched") @PathVariable int id) {
-        Client client = clientDao.getClientById(id);
+    public ResponseEntity<Client> findById(@Parameter(description = "id of client to be searched") @PathVariable int id) {
+        Client client = clientService.findById(id);
         if (client == null) {
             throw new ClientNotFoundException("Aucun client trouvé avec l'id " + id);
         } else {
@@ -89,12 +89,11 @@ public class ClientController {
             @RequestBody Client client) {
         // vérifier le numéro de permis avant d'ajouter le client
         boolean isValid = licenseValidationService.isLicenseValid(client.getLicenseNumber());
-
         if (!isValid) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
-        Client createdClient = clientDao.addClient(client);
+        Client createdClient = clientService.save(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdClient);
     }
 
@@ -103,12 +102,12 @@ public class ClientController {
     @Tag(name = "updateClient")
     @PutMapping("/clients")
     public ResponseEntity<Client> updateClient(@RequestBody Client client) {
-        Client updatedClient = clientDao.updateClient(client);
-        if (updatedClient == null) {
-            throw new ClientNotFoundException("Impossible de mettre à jour le client : id " + client.getId() + " introuvable.");
-        } else {
-            return ResponseEntity.ok(updatedClient);
+        Client existing = clientService.findById(client.getId());
+        if (existing == null) {
+            throw new ClientNotFoundException("Impossible de modifier le client : id " + client.getId() + " introuvable");
         }
+        Client updated = clientService.save(client);
+        return ResponseEntity.ok(updated);
     }
 
     @Tag(name = "delete")
@@ -116,12 +115,11 @@ public class ClientController {
     @Tag(name = "deleteClient")
     @DeleteMapping("/clients/{id}")
     public ResponseEntity<Void> deleteClient(@PathVariable int id) {
-        Client existing = clientDao.getClientById(id);
+        Client existing = clientService.findById(id);
         if (existing == null) {
-            clientDao.deleteClient(id);
-            throw new ClientNotFoundException("Impossible de supprimer le client : id " + id + " introuvable.");
-        } else {
-            return ResponseEntity.noContent().build();
+            throw new ClientNotFoundException("Impossible de supprimer le client : id " + id + " introuvable");
         }
+        clientService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
