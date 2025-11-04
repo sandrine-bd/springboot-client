@@ -55,7 +55,6 @@ public class Client {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
@@ -63,7 +62,6 @@ public class Client {
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -71,7 +69,6 @@ public class Client {
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -79,7 +76,6 @@ public class Client {
     public LocalDate getBirthDate() {
         return birthDate;
     }
-
     public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
@@ -87,7 +83,6 @@ public class Client {
     public String getLicenseNumber() {
         return licenseNumber;
     }
-
     public void setLicenseNumber(String licenseNumber) {
         this.licenseNumber = licenseNumber;
     }

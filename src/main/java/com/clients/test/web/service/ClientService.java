@@ -1,6 +1,5 @@
 package com.clients.test.web.service;
 
-import com.clients.test.web.dao.ClientRepository;
 import com.clients.test.web.model.Client;
 import org.springframework.stereotype.Service;
 
